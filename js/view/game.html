@@ -1,0 +1,91 @@
+<div id="screen1">
+	<div id="wellcome">
+		<h3>Instrucciones	del juego</h3>
+		<p>
+			Introduce el nombre del jugador o jugadores.
+		</p>
+		<p>
+			Aparecerá una pregunta aleatoria sobre el riesgo de estrés térmico en la industria del vidrio. Hay diferentes temáticas: 
+			<div style="margin-left: 5%; margin-right: 5%;" >
+			<table style="text-align: left" class="table">
+				<tr>
+					<td><span class="red">Rojo</span>: Generalidades y definiciones</td>
+					<td><span class="blue">Azul</span>: Normativa</td>
+				</tr>
+				<tr>
+					<td><span class="yellow">Amarillo</span>: Medidas preventivas</td>
+					<td><span class="green">Verde</span>: Factores que contribuyen al estrés térmico</td>
+				</tr>
+				<tr>
+					<td><span class="cyan">Celeste</span>: Factores personales</td>
+					<td><span class="purple">Púrpura</span>: Efectos en la salud</td>
+				</tr>
+			</table>
+			</div>
+		</p>
+		<p>
+			Si el jugador acierta la respuesta, se añade el color correspondiente a su marcador de puntuación. Si sale un color que el jugador ya tenía no sumará puntuación en caso de acertar, pero si falla se eliminará el color que había conseguido. El juego concluye cuando terminen las rondas de preguntas.
+		</p>
+		<p>Para empezar pulsa JUGAR</p>
+	</div>
+	
+	<div rv-each-player="content.players" class="input-group" style="margin-bottom: 10px;">
+		<span class="input-group-addon">Nombre del Jugador { player.id }</span> 
+		<input type="text" maxlength="200" class="form-control" rv-value="player.name"/>
+		<span class="input-group-btn">
+			<button rv-on-click="controller.remove_player" class="btn btn-default" rv-value="player.id" rv-hide="player.id | is_first">
+				<span class="glyphicon glyphicon-remove"></span>&nbsp;eliminar
+			</button>
+		</span>
+	</div>
+
+	<div id="buttons">
+		<button rv-on-click="controller.add_player" class="btn btn-warning" rv-show="content.max_players | not_max">Añadir jugador</button>
+		<button rv-on-click="controller.start" class="btn btn-primary">JUGAR</button>
+	</div>
+	
+</div>
+
+<div id="screen3" style="display: none">
+	<div id="current_question">
+		<div id="current_question_prompt">
+			<p>
+				Pregunta para <b>{ content.current_player_idx | get_name }</b> sobre:
+				<i rv-class="content.current_question.color">{ content.current_question.color | get_definition }</i>
+			</p>
+		</div>
+		<p rv-text="content.current_question.text" id="question"></p>
+		<button type="button" class="btn btn-lg btn-success" rv-on-click="controller.correct" answer="true">Verdadero</button>
+		<button type="button" class="btn btn-lg btn-danger" rv-on-click="controller.correct" answer="false" style="margin-left: 15px;">Falso</button>
+	</div>
+</div>
+
+<div id="screen4" style="display: none">
+	<p class="success" rv-show="content.current_question_success">¡Enhorabuena la respuesta es correcta!</p>
+	<p class="fail" rv-hide="content.current_question_success">Lo sentimos, la respuesta no es correcta</p>
+	<button type="button" class="btn btn-lg btn-warning" rv-on-click="controller.next_player">Continuar&nbsp;<span class="glyphicon glyphicon-arrow-right"></span></button>
+</div>
+
+<div id="screen5" style="display: none">
+	<div class="big_info">FIN DEL JUEGO</div>
+	<div class="final_score">{ content.final_score_text }</div>
+	<button type="button" class="btn btn-lg btn-primary" rv-on-click="controller.new_game">Volver a Jugar</button>
+</div>
+
+<div id="alerts" style="margin-top: 15px;">
+	<div class="alert alert-danger fade hide" role="alert" id="player_names">Todos los jugadores deben tener nombre. Completa los nombres y vuelve a pulsar Jugar</div>
+</div>
+
+<div id="score" style="display: none">
+	<h4>Puntuaciones</h4>
+	<table class="table">
+		<tr>
+			<td>Jugador</td><td>Colores</td><td>Preguntas restantes</td>
+		</tr>
+		<tr rv-each-player="content.players">
+			<td>{ player.name }</td>
+			<td><div rv-each-score="player.score | render_score " rv-class="score"></div></td>
+			<td>{ player.attempts }</td>
+		</tr>
+	</table>
+</div>
